@@ -1,0 +1,27 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-latest, cxx: clang++ }  # x86-64, SSE2 path
+          - { os: ubuntu-latest, cxx: g++ }
+          - { os: macos-14, cxx: clang++ }       # Apple Silicon, NEON path
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: make test CXX=${{ matrix.cxx }}
+      - run: make bench CXX=${{ matrix.cxx }}
+
+  fuzz:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: make build/fuzz-libfuzzer CXX=clang++
+      - run: ./build/fuzz-libfuzzer -max_total_time=120 -max_len=4096
