@@ -12,7 +12,7 @@ jobs:
         include:
           - { os: ubuntu-latest, cxx: clang++ }  # x86-64, SSE2 path
           - { os: ubuntu-latest, cxx: g++ }
-          - { os: macos-14, cxx: clang++ }       # Apple Silicon, NEON path
+          - { os: macos-latest, cxx: clang++ }   # Apple Silicon, NEON path
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
